@@ -11,9 +11,11 @@ from struct import unpack
 # =========================================================== RouteDistinguisher
 # RFC 4364
 
-class RouteDistinguisher (object):
+class Distinguisher (object):
+	__slots__ = ['rd','_len','TYPE','NORD']
 
-	__slots__ = ['rd','_len']
+	TYPE = ''
+	NORD = None
 
 	def __init__ (self,rd):
 		self.rd = rd
@@ -40,11 +42,19 @@ class RouteDistinguisher (object):
 	def json (self):
 		if not self.rd:
 			return ''
-		return '"route-distinguisher": "%s"' % self._str()
+		if self.TYPE:
+			return '"%s-distinguisher": "%s"' % (self.TYPE,self._str())
+		return '"distinguisher": "%s"' % self._str()
 
 	def __str__ (self):
 		if not self.rd:
 			return ''
-		return ' route-distinguisher %s' % self._str()
+		if self.TYPE:
+			return ' %s-distinguisher %s' % (self.TYPE,self._str())
+		return ' distinguisher %s' % self._str()
+
+
+class RouteDistinguisher (Distinguisher):
+	TYPE = 'route'
 
 RouteDistinguisher.NORD = RouteDistinguisher('')
